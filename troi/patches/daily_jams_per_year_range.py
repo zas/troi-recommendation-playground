@@ -5,6 +5,7 @@ from troi import Element, Recording, PipelineError
 import troi.listenbrainz.recs
 import troi.filters
 import troi.musicbrainz.recording_lookup
+import troi.musicbrainz.year_lookup
 from troi.patches.daily_jams import DailyJamsElement
 
 
@@ -74,9 +75,12 @@ class DailyJamsPerYearRange(troi.patch.Patch):
         r_lookup = troi.musicbrainz.recording_lookup.RecordingLookupElement()
         r_lookup.set_sources(recs)
 
+        y_lookup = troi.musicbrainz.year_lookup.YearLookupElement()
+        y_lookup.set_sources(r_lookup)
+
         # Filter out tracks that do not fit into the given year range
         year_filter = troi.filters.YearRangeFilterElement(start_year, end_year)
-        year_filter.set_sources(r_lookup)
+        year_filter.set_sources(y_lookup)
 
         # If an artist should never appear in a playlist, add the artist_credit_id here
         artist_filter = troi.filters.ArtistCreditFilterElement([])
